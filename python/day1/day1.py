@@ -1,7 +1,9 @@
+import sys
 import heapq
 from collections import defaultdict
 
-with open("../../data/day1.txt") as f:
+filename = sys.argv[1] if len(sys.argv) > 1 else "../../data/day1.txt"
+with open(filename) as f:
     inp = f.read()
 
 lines = inp.split("\n")

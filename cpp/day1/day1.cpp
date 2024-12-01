@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <unordered_map>
 
-std::vector<std::tuple<int, int>> parse() {
+std::vector<std::tuple<int, int>> parse(const std::string& filename) {
     
-    std::ifstream file { "/home/ojsheld/projects/aoc24/data/day1.txt" };
+    std::ifstream file { filename };
     if (!file.is_open()) {
         std::cerr << "Could not open the file!" << std::endl;
         exit(1);
@@ -73,9 +73,10 @@ int part2(const std::vector<std::tuple<int, int>> &data) {
     return res;
 }
 
-int main() {
-
-    auto data = parse();
+int main(int argc, char *argv[]) {
+    
+    std::string filename = argc > 1 ? argv[1] : "../../data/day1.txt";
+    auto data = parse(filename);
 
     std::cout << "part1()=" << part1(data) << std::endl;
     std::cout << "part2()=" << part2(data) << std::endl;
