@@ -2,13 +2,6 @@ import sys
 import heapq
 from collections import defaultdict
 
-filename = sys.argv[1] if len(sys.argv) > 1 else "../../data/day1.txt"
-with open(filename) as f:
-    inp = f.read()
-
-lines = inp.split("\n")
-values = [tuple(map(int, line.split())) for line in lines]
-
 def part1():
 
     left = []
@@ -39,5 +32,13 @@ def part2():
 
 
 if __name__ == "__main__":
+
+    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day1.txt"
+    with open(filename) as f:
+        inp = f.read()
+
+    lines = inp.split("\n")
+    values = [tuple(map(int, line.split())) for line in lines]
+    
     print(f"{part1()=}")
     print(f"{part2()=}")
