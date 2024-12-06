@@ -1,5 +1,6 @@
 import sys
 from collections import defaultdict, deque
+from functools import cmp_to_key
 
 def valid(page, k_before_v):
     for i, v in enumerate(page):
@@ -7,7 +8,6 @@ def valid(page, k_before_v):
             if v not in k_before_v[page[j]]:
                 return False
     return True
-        
 
 def part1():
     k_before_v = defaultdict(set)
@@ -26,58 +26,31 @@ def part1():
         res += valid_page[len(valid_page) // 2]
     return res
 
-    
-
 def part2():
-    k_before_v = defaultdict(set)
-    v_before_k = defaultdict(set)
-    for X, Y in page_ordering_rules:
-        v_before_k[X].add(Y)
-        k_before_v[Y].add(X)
+    cache = {}
+    for x, y in page_ordering_rules:
+        cache[(x, y)] = -1
+        cache[(y, x)] = 1
     
-    valid_pages = []
-    invalid_pages = []
+    def is_ordered(update):
+        for i in range(len(update)):
+            for j in range(i + 1, len(update)):
+                key = (update[i], update[j])
+                if key in cache and cache[key] == 1:
+                    return False
+        return True
+    
+    modified_pages = []
     for page in pages:
-        if valid(page, k_before_v):
-            valid_pages.append(page)
-        else:
-            invalid_pages.append(page)
-
-    def findOrder(nums: list[int], prerequisites):
-        indegree = defaultdict(int)
-        adj = defaultdict(list)
-        for src, dst in prerequisites:
-            indegree[dst] += 1
-            adj[src].append(dst)
-
-        q = deque()
-        for n in nums:
-            if indegree[n] == 0:
-                q.append(n)
-        
-        finish, output = 0, []
-        while q:
-            node = q.popleft()
-            output.append(node)
-            finish += 1
-            for nei in adj[node]:
-                indegree[nei] -= 1
-                if indegree[nei] == 0:
-                    q.append(nei)
-        
-        return output[::-1]
+        if is_ordered(page):
+            continue
+        page.sort(key=cmp_to_key(lambda x, y: cache.get((x, y), 0)))
+        modified_pages.append(page)
     
-    
-    corrected_pages = []
-    
-    for invalid_page in invalid_pages:
-        corrected_pages.append(findOrder(invalid_page, page_ordering_rules))
-    print(corrected_pages)
-      
     res = 0
-    for valid_page in corrected_pages:
+    for valid_page in modified_pages:
         res += valid_page[len(valid_page) // 2]
-    return res      
+    return res
 
 def parse():
     
@@ -98,7 +71,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day5.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day5.txt"
     page_ordering_rules, pages = parse()
     
     print(f"{part1()=}")
