@@ -47,7 +47,6 @@ def part2():
             r -= 1
             continue
         for l, (file_id, count) in enumerate(expanded):
-            # print(l, r, len(expanded))
             if l > r:
                 break
             if file_id != EMPTY:
@@ -56,16 +55,10 @@ def part2():
             if move_count > count:
                 continue
             
-            # print(l, r, expanded[l], expanded[r])
             expanded[r][0] = EMPTY
             expanded[l][1] -= move_count
             expanded.insert(l, [move_file_id, move_count])
             r -= 1
-            
-            # print(expanded)
-            # print(convert(expanded))
-            # print()
-            
             break
         else:
             break
@@ -79,12 +72,8 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day9.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day9.test.txt"
     disk_map = parse()
 
     print(f"{part1()=}")
     print(f"{part2()=}")
-    
-    # example = list(map(int, map(lambda x: int(x) if x != "." else 0, "00992111777.44.333....5555.6666.....8888..")))
-    # print(f"example={example}")
-    # print(checksum(example))
