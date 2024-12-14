@@ -1,4 +1,5 @@
 import sys
+from collections import Counter
 
 class Node:
 
@@ -57,11 +58,56 @@ def blink_linked_list(head):
         curr = curr.next
     return head
 
+class StoneTally:
+
+    def __init__(self):
+        self.even_len_digits = []
+        self.other_nums = Counter()
+
+    def parse(self, stones):
+        for stone in stones:
+            if len(str(stone)) % 2 == 0:
+                self.even_len_digits.append(stone)
+            else:
+                self.other_nums[stone] += 1
+    
+    def num_stones(self):
+        return (
+            len(self.even_len_digits) +
+            sum(self.other_nums.values())
+        )
+
+    def blink(self):
+        new_even_len_digits = []
+        new_other_nums = Counter()
+
+        # rule 1
+        new_other_nums[1] += self.other_nums.get(0, 0)
+        new_other_nums[0] = 0
+
+        # rule 2
+        for _ in range(self.other_nums.get(2024, 0)):
+            new_even_len_digits.append(20)
+            new_even_len_digits.append(24)
+        new_other_nums[2024] = 0
+
+        # rule 3
+        for other_num, count in self.other_nums.items():
+            new_num = other_num * 2024
+            if len(str(new_num)) % 2 == 0:
+                new_even_len_digits.append(new_num)
+            else:
+                new_other_nums[new_num] += count
+        
+        self.even_len_digits = new_even_len_digits
+        self.other_nums = new_other_nums
+
 def part2():
-    stones = create_stones(lines[:])
+    stone_tally = StoneTally()
+    stone_tally.parse(lines)
     for i in range(75):
-        stones = blink_linked_list(stones)
-    return len(stones)
+        stone_tally.blink()
+    return stone_tally.num_stones()
 
 def parse():
     with open(filename) as f:
