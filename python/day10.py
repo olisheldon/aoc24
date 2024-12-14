@@ -1,9 +1,16 @@
 import sys
+from enum import Enum, auto
+
+class Scoring(Enum):
+    NUM_TRAILHEADS = auto() # part 1
+    NUM_DISTINCT_ROUTES = auto() # part 2
+
 
 SUMMIT = 9
 TRAILHEAD = 0
 
-def part1():
+def calc_trailhead_scores(scoring):
+
     grid = parse()
     ROWS, COLS = len(grid), len(grid[0])
     NEIGHBOURS = ((1, 0), (-1, 0), (0, 1), (0, -1))
@@ -17,7 +24,8 @@ def part1():
         ):
             return 0
         if grid[r][c] == SUMMIT:
-            visited.add((r, c))
+            if scoring == Scoring.NUM_TRAILHEADS:
+                visited.add((r, c))
             return 1
         
         res = 0
@@ -35,8 +43,11 @@ def part1():
                 res += dfs(r, c, TRAILHEAD - 1)
     return res
 
+def part1():
+    return calc_trailhead_scores(Scoring.NUM_TRAILHEADS)
+
 def part2():
-    pass
+    return calc_trailhead_scores(Scoring.NUM_DISTINCT_ROUTES)
 
 def parse():
     with open(filename) as f:
