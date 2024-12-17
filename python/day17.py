@@ -2,13 +2,17 @@ import sys
 
 class Computer:
     
-    def __init__(self, registers, program_data):
-        self.a, self.b, self.c = registers
+    def __init__(self, registers, program_data, a=0):
+        self.a = a or registers[0]
+        self.b = registers[1]
+        self.c = registers[2]
         self.program_data = program_data
         
         self.instruction_ptr = 0
         self.output = []
         self.log = []
+        self.states = set()
+        self.loop = False
     
         self.opcode_to_op  = [
             self._adv,
@@ -21,8 +25,15 @@ class Computer:
             self._cdv,
             ]
         
+    def detect_loop(self):
+        state = (self.a, self.b, self.c, self.instruction_ptr)
+        if state in self.states:
+            self.loop = True
+            return
+        self.states.add(state)
+        
     def run_command(self, opcode, operand):
-        self.log.append(f"{opcode=}, {operand=}")
+        self.detect_loop()
         self.opcode_to_op[opcode](operand)
         
     def _combo(self, val):
@@ -79,18 +90,25 @@ class Computer:
         while self.instruction_ptr < len(self.program_data) - 1:
             opcode, operand = self.program_data[self.instruction_ptr : self.instruction_ptr + 2]
             self.run_command(opcode, operand)
-        
+            if self.loop:
+                return ""
         return ",".join(self.output)
     
-
 def part1():
     computer = Computer(*parse())
     output = computer.run()
     return output
 
 def part2():
-    pass
-
+    register_init, program_data = parse()
+    s = ",".join(map(str, program_data))
+    a = 0
+    computer = Computer(register_init, program_data, a)
+    while computer.run() != s:
+        print(a)
+        a += 1
+        computer = Computer(register_init, program_data, a)
+    return a
 
 def parse():
     with open(filename) as f:
