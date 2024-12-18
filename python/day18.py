@@ -1,11 +1,11 @@
 import sys
-from collections import deque
+import heapq
 
-ROWS, COLS = 7, 7
-# ROWS, COLS = 71, 71
+# ROWS, COLS = 7, 7
+ROWS, COLS = 71, 71
 
-NUM_STEPS = 12
-# NUM_STEPS = 1024
+# NUM_STEPS = 12
+NUM_STEPS = 1024
 
 NEIGHBOURS = ((-1, 0), (1, 0), (0, 1), (0, -1))
 
@@ -33,47 +33,26 @@ def print_history(grid, history):
                 grid[r][c] = "O"
     print_grid(grid)
     
-    
 def part1():
     grid = create_grid()
-    print_grid(grid)
+    visited = set()
         
-    q = deque()
-    q.append((0, 0, 0, set()))
-    while q:
-        for _ in range(len(q)):
-            r, c, steps, visited = q.popleft()
-            if (
-                r not in range(ROWS) or
-                c not in range(COLS) or
-                (r, c) in visited or
-                grid[r][c] == WALL
-            ):
-                continue
-            if (r, c) == (ROWS - 1, COLS - 1):
-                print_history(grid, visited & set((r, c)))
-                return steps
-            
-            for dr, dc in NEIGHBOURS:
-                q.appendleft((r + dr, c + dc, steps + 1, visited & set((r, c))))
-    return -1
+    min_heap = [(0, 0, 0)] # (steps, r, c)
+    while min_heap:
+        steps, r, c = heapq.heappop(min_heap)
+        if (r, c) == (ROWS - 1, COLS - 1):
+            return steps
+        if (
+            r not in range(ROWS) or
+            c not in range(COLS) or
+            (r, c) in visited or
+            grid[r][c] == WALL
+        ):
+            continue
+        visited.add((r, c))
         
-    # min_heap = [(0, 0, 0)] # (steps, r, c)
-    # while min_heap:
-    #     steps, r, c = heapq.heappop(min_heap)
-    #     if (r, c) == (ROWS - 1, COLS - 1):
-    #         return steps
-    #     if (
-    #         r not in range(ROWS) or
-    #         c not in range(COLS) or
-    #         # (r, c) in visited or
-    #         grid[r][c] == WALL
-    #     ):
-    #         continue
-    #     # visited.add((r, c))
-        
-    #     for dr, dc in NEIGHBOURS:
-    #         heapq.heappush(min_heap, (steps + 1, )))
+        for dr, dc in NEIGHBOURS:
+            heapq.heappush(min_heap, (steps + 1, r + dr, c + dc))
 
 def part2():
     pass
@@ -85,7 +64,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day18.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day18.txt"
 
     print(part1())
     print(part2())
