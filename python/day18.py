@@ -12,10 +12,10 @@ NEIGHBOURS = ((-1, 0), (1, 0), (0, 1), (0, -1))
 EMPTY = "."
 WALL = "#"
 
-def create_grid():
+def create_grid(num_steps):
     grid = [["." for _ in range(COLS)] for _ in range(ROWS)]
     coords = parse()
-    for c, r in coords[:NUM_STEPS]:
+    for c, r in coords[:num_steps]:
         grid[r][c] = "#"
     return grid
 
@@ -33,8 +33,8 @@ def print_history(grid, history):
                 grid[r][c] = "O"
     print_grid(grid)
     
-def part1():
-    grid = create_grid()
+def min_path(num_steps):
+    grid = create_grid(num_steps)
     visited = set()
         
     min_heap = [(0, 0, 0)] # (steps, r, c)
@@ -53,9 +53,16 @@ def part1():
         
         for dr, dc in NEIGHBOURS:
             heapq.heappush(min_heap, (steps + 1, r + dr, c + dc))
+    return -1
+    
+def part1():
+    return min_path(NUM_STEPS)
 
 def part2():
-    pass
+    num_fallen = 0
+    while min_path(num_fallen) != -1:
+        num_fallen += 1
+    return ",".join(map(str, parse()[num_fallen - 1]))
 
 def parse():
     with open(filename) as f:
