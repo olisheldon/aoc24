@@ -1,5 +1,6 @@
 import sys
 from collections import Counter
+from pathlib import Path
 
 class Node:
 
@@ -103,6 +104,7 @@ class StoneTally:
         self.other_nums = new_other_nums
 
 def part2():
+    return "INCOMPLETE"
     stone_tally = StoneTally()
     stone_tally.parse(lines)
     for i in range(75):
@@ -117,8 +119,8 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day11.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
     lines = parse()
 
-    print(part1())
-    print(part2())
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

@@ -1,6 +1,7 @@
 import sys
 import heapq
 from collections import defaultdict
+from pathlib import Path
 
 def part1():
 
@@ -30,15 +31,13 @@ def part2():
         res += l * right[l]
     return res
 
-
 if __name__ == "__main__":
-
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day1.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
     with open(filename) as f:
         inp = f.read()
 
     lines = inp.split("\n")
     values = [tuple(map(int, line.split())) for line in lines]
     
-    print(f"{part1()=}")
-    print(f"{part2()=}")
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

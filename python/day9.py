@@ -1,4 +1,6 @@
 import sys
+from pathlib import Path
+
 EMPTY = -1
 
 
@@ -29,6 +31,7 @@ def part1():
     return checksum(expanded)
 
 def part2():
+    return "INCOMPLETE"    
         
     def convert(expanded):
         res = []
@@ -72,8 +75,8 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day9.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
     disk_map = parse()
 
-    print(f"{part1()=}")
-    print(f"{part2()=}")
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

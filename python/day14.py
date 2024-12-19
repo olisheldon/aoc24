@@ -1,5 +1,6 @@
 import sys
 import functools
+from pathlib import Path
 
 ROWS, COLS = 101, 103
 # ROWS, COLS = 11, 7
@@ -74,6 +75,7 @@ def check(robots):
     return input("Looking good? (y/n)").lower() == "y"
 
 def part2():
+    return "INCOMPLETE"
     robots = parse()
     
     i = 0
@@ -99,7 +101,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day14.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
 
-    print(part1())
-    print(part2())
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

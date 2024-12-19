@@ -1,7 +1,9 @@
 import sys
 sys.setrecursionlimit(2147483647)
+from pathlib import Path
 
 def part1():
+    return "INCOMPLETE"
     
     res = set()
     def dfs(x, y, tokens):
@@ -21,6 +23,7 @@ def part1():
     
 
 def part2():
+    return "INCOMPLETE"
     pass
 
 def parse():
@@ -30,6 +33,7 @@ def parse():
     machines = inp.split("\n\n")
     res = [] # [(a_dx, a_dy, b_dx, b_dy, x, y)]
     for machine in machines:
+        print(machine)
         button_a, button_b, prize = machine.split("\n")
         a_dx = int(button_a.split(": ")[1][2:].split(",")[0])
         a_dy = int(button_a.split(", Y+")[-1])
@@ -42,7 +46,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day13.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
 
-    print(part1())
-    print(part2())
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

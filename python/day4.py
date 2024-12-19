@@ -1,5 +1,6 @@
 import sys
 import re
+from pathlib import Path
 
 XMAS = "XMAS"
 DIRECTIONS = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -56,11 +57,11 @@ def part2():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day4.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
     with open(filename) as f:
         inp = f.read()
 
     lines = list(map(list, inp.split("\n")))
     
-    print(f"{part1()=}")
-    print(f"{part2()=}")
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

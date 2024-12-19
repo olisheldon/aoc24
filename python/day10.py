@@ -1,5 +1,6 @@
 import sys
 from enum import Enum, auto
+from pathlib import Path
 
 class Scoring(Enum):
     NUM_TRAILHEADS = auto() # part 1
@@ -56,7 +57,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day10.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
     
-    print(f"{part1()=}")
-    print(f"{part2()=}")
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

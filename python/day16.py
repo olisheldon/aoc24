@@ -1,6 +1,9 @@
 import sys
 import heapq
 from enum import Enum
+from pathlib import Path
+
+PRINT = False
 
 START = "S"
 EMPTY = "."
@@ -30,6 +33,8 @@ class Direction(Enum):
 ROTATIONS = ((-1, 0), (0, 1), (1, 0), (0, -1))
 
 def show_history(grid, history, show_path=True):
+    if not PRINT:
+        return
     grid = grid.copy()
     history_dict = {}
     for r, c, direction in history:
@@ -85,6 +90,7 @@ def part1():
     return score
 
 def part2():
+    return "INCOMPLETE"
     
     grid = parse()
     ROWS, COLS = len(grid), len(grid[0])
@@ -111,7 +117,6 @@ def part2():
         ):
             continue
         if grid[r][c] == END:
-            print(f"{score=}")
             if not min_score:
                 min_score = score
                 min_score_histories.append(history + [(r, c, direction)])
@@ -137,13 +142,12 @@ def part2():
 def parse():
     with open(filename) as f:
         inp = f.read()
-
     grid = list(map(list, inp.split("\n")))
     return grid
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day16.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
 
-    print(part1())
-    print(part2())
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

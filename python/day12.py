@@ -1,6 +1,7 @@
 import sys
 from enum import Enum, auto
 from collections import defaultdict
+from pathlib import Path
 
 class Direction(Enum):
     HORIZONTAL = auto()
@@ -57,6 +58,7 @@ def part1():
     return sum(map(lambda x: x[0] * x[1], part1_helper()))
 
 def part2():
+    return "INCOMPLETE"
     NEIGHBOURS = ((1, 0), (-1, 0), (0, 1), (0, -1))
     grid = parse()
     ROWS, COLS = len(grid), len(grid[0])
@@ -126,7 +128,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day12.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
 
-    print(f"{part1()=}")
-    print(f"{part2()=}")
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

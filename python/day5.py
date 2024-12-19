@@ -1,6 +1,7 @@
 import sys
 from collections import defaultdict, deque
 from functools import cmp_to_key
+from pathlib import Path
 
 def valid(page, k_before_v):
     for i, v in enumerate(page):
@@ -71,8 +72,8 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day5.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
     page_ordering_rules, pages = parse()
     
-    print(f"{part1()=}")
-    print(f"{part2()=}")
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))

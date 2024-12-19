@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 class Computer:
     
@@ -100,6 +101,7 @@ def part1():
     return output
 
 def part2():
+    return "INCOMPLETE"
     register_init, program_data = parse()
     s = ",".join(map(str, program_data))
     a = 0
@@ -124,7 +126,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else "../data/day17.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
 
-    print(part1())
-    print(part2())
+    print("part1=" + str(part1()))
+    print("part2=" + str(part2()))
