@@ -14,7 +14,17 @@ def part1():
     return sum(count)
 
 def part2():
-    pass
+    towels, target_towels = parse()
+    count = []
+    for target_towel in target_towels:
+        res = [0] * (len(target_towel) + 1)
+        res[-1] = 1
+        for i in range(len(target_towel) - 1, -1, -1):
+            for towel in towels:
+                if i + len(towel) <= len(target_towel) and towel == target_towel[ i : i + len(towel) ]:
+                    res[i] += res[i + len(towel)]
+        count.append(res[0])
+    return sum(count)
 
 def parse():
     with open(filename) as f:
