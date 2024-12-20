@@ -76,7 +76,7 @@ part2=692596560138745
 
 ./python/day20.py
 part1=1351
-part2=INCOMPLETE
+part2=966130
 
 ./python/day21.py
 part1=INCOMPLETE
