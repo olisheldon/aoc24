@@ -83,8 +83,8 @@ part1=INCOMPLETE
 part2=INCOMPLETE
 
 ./python/day22.py
-part1=INCOMPLETE
-part2=INCOMPLETE
+part1=15303617151
+part2=1727
 
 ./python/day23.py
 part1=INCOMPLETE
