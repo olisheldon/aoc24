@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from collections import defaultdict
+from collections import defaultdict, Counter
 import itertools
 
 def part1():
@@ -39,20 +39,18 @@ def part2():
         adj[u].add(v)
         adj[v].add(u)
         
-    def all_connected(computers):
-        for u in computers:
-            for v in computers:
-                if u == v:
-                    continue
-                if v not in adj[u]:
-                    return False
-        return True
-        
-    for num_computers in range(len(computers), -1, -1):
-        for potential_computers in itertools.combinations(computers, num_computers):
-            if all_connected(potential_computers):
-                return num_computers
-    return -1
+    max_connections = max([len(adj[u]) for u in computers])
+    
+    res = (0, None)
+    for computer in computers:
+        num_connections = len(adj[computer])
+        network_counter = Counter()
+        for connected_computer in adj[computer]:
+            for connected_computer_connection in adj[connected_computer]:
+                if connected_computer_connection in adj[computer]:
+                    network_counter[connected_computer_connection] += 1
+        res = max(res, (max(network_counter.values()), network_counter), key=lambda x: x[0])
+    return ",".join(sorted(res[1].keys()))
 
 def parse():
     with open(filename) as f:
@@ -62,7 +60,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.test.txt"
 
     print("part1=" + str(part1()))
     print("part2=" + str(part2()))
