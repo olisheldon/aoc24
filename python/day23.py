@@ -1,11 +1,11 @@
 import sys
 from pathlib import Path
 from collections import defaultdict
-from itertools import chain
+import itertools
 
 def part1():
     connections = parse()
-    computers = set(chain(*connections))
+    computers = set(itertools.chain(*connections))
     
     adj = defaultdict(set)
     for u, v in connections:
@@ -31,7 +31,28 @@ def part1():
     return len(list(filter(lambda x: contains_element_starting_with_t(x), seen)))
 
 def part2():
-    return "INCOMPLETE"
+    connections = parse()
+    computers = set(itertools.chain(*connections))
+    
+    adj = defaultdict(set)
+    for u, v in connections:
+        adj[u].add(v)
+        adj[v].add(u)
+        
+    def all_connected(computers):
+        for u in computers:
+            for v in computers:
+                if u == v:
+                    continue
+                if v not in adj[u]:
+                    return False
+        return True
+        
+    for num_computers in range(len(computers), -1, -1):
+        for potential_computers in itertools.combinations(computers, num_computers):
+            if all_connected(potential_computers):
+                return num_computers
+    return -1
 
 def parse():
     with open(filename) as f:
