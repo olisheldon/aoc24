@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import itertools
 
 class Node:
     
@@ -15,28 +16,27 @@ class Node:
     def has_value(self):
         return self.value is not None
 
-def part1():
+def create_nodes():
     init_values, connections = parse()
     
     nodes = {}
-    nodes_with_vals = set()
     for init_node_name, value in init_values.items():
         nodes[init_node_name] = Node(init_node_name, value)
-        nodes_with_vals.add(init_node_name)
     for (i_node_1, gate, i_node_2), target_node in connections:
         for node in (i_node_1, i_node_2, target_node):
             if node not in nodes:
                 nodes[node] = Node(node)
     for (i_node_1, gate, i_node_2), target_node in connections:
         nodes[target_node].inputs.append((nodes[i_node_1], nodes[i_node_2], gate))
+    return nodes
+
+def part1():
     
-    visited = set()
+    nodes = create_nodes()
+    
     def dfs(u: Node):
-        if u in visited:
-            return
         if u.has_value:
             return
-        visited.add(u)
         
         for n1, n2, logic in u.inputs:
             dfs(n1)
@@ -56,8 +56,6 @@ def part1():
     
     bin_s = "".join((str(node.value) for node in sorted(nodes.values(), key=lambda x: x.name, reverse=True) if node.name.startswith("z")))
     return int(bin_s, base=2)
-        
-    
 
 def part2():
     return "INCOMPLETE"
