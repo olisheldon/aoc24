@@ -79,7 +79,7 @@ part1=1351
 part2=966130
 
 ./python/day21.py
-part1=INCOMPLETE
+part1=171596
 part2=INCOMPLETE
 
 ./python/day22.py

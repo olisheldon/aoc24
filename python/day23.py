@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from collections import defaultdict, Counter
+from collections import defaultdict
 import itertools
 
 def part1():
@@ -32,25 +32,30 @@ def part1():
 
 def part2():
     connections = parse()
-    computers = set(itertools.chain(*connections))
+    computers = list(set(itertools.chain(*connections)))
     
     adj = defaultdict(set)
     for u, v in connections:
         adj[u].add(v)
         adj[v].add(u)
-        
-    max_connections = max([len(adj[u]) for u in computers])
     
-    res = (0, None)
+    sets = set()
+    def dfs(u, required):
+        key = tuple(sorted(required))
+        if key in sets:
+            return
+        sets.add(key)
+        
+        for v in adj[u]:
+            if v in required:
+                continue
+            if not all(v in adj[req] for req in required):
+                continue
+            dfs(v, {*required, v})
+
     for computer in computers:
-        num_connections = len(adj[computer])
-        network_counter = Counter()
-        for connected_computer in adj[computer]:
-            for connected_computer_connection in adj[connected_computer]:
-                if connected_computer_connection in adj[computer]:
-                    network_counter[connected_computer_connection] += 1
-        res = max(res, (max(network_counter.values()), network_counter), key=lambda x: x[0])
-    return ",".join(sorted(res[1].keys()))
+        dfs(computer, {computer})
+    return ",".join(sorted(max(sets, key=len)))
 
 def parse():
     with open(filename) as f:
@@ -60,7 +65,7 @@ def parse():
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.test.txt"
+    filename = sys.argv[1] if len(sys.argv) > 1 else f"../data/{Path(__file__).stem}.txt"
 
     print("part1=" + str(part1()))
     print("part2=" + str(part2()))
