@@ -44,7 +44,7 @@ part2=236302670835517
 
 ./python/day12.py
 part1=1431440
-part2=INCOMPLETE
+part2=869070
 
 ./python/day13.py
 part1=36954

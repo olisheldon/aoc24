@@ -1,6 +1,6 @@
 import sys
 from enum import Enum, auto
-from collections import defaultdict
+from collections import defaultdict, deque
 from pathlib import Path
 
 class Direction(Enum):
@@ -58,68 +58,72 @@ def part1():
     return sum(map(lambda x: x[0] * x[1], part1_helper()))
 
 def part2():
-    return "INCOMPLETE"
-    NEIGHBOURS = ((1, 0), (-1, 0), (0, 1), (0, -1))
     grid = parse()
-    ROWS, COLS = len(grid), len(grid[0])
-    visited = set()
+    rows = len(grid)
+    cols = len(grid[0])
     
-    side_id = 0
-    coords_to_side_ids = defaultdict(set) # (r, c) : set(int)
-    side_id_to_coords = defaultdict(set)
+    regions = []
+    seen = set()
     
-    def dfs_side(dr, dc, r, c, veg, seen):
-        nonlocal side_id
-        direction = Direction.get_direction(dr, dc)
-        if (
-            (r, c) in seen or
-            r not in range(ROWS) or
-            c not in range(COLS) or
-            grid[r][c] != veg
-        ):
-            return 0
-        seen.add((r, c))
-        
-        side_id_to_coords[side_id].add((r, c))
-        coords_to_side_ids[(r, c)].add(side_id)
-        
-        # r, c is new coord of this side
-        return 1 + dfs_side(dr, dc, r + dr, c + dc, veg, seen)
+    for r in range(rows):
+        for c in range(cols):
+            if (r, c) in seen:
+                continue
+                
+            crop = grid[r][c]
+            region = {(r, c)}
+            seen.add((r, c))
+            
+            q = deque([(r, c)])
+            while q:
+                cr, cc = q.popleft()
+                for nr, nc in [(cr-1, cc), (cr+1, cc), (cr, cc-1), (cr, cc+1)]:
+                    if nr < 0 or nc < 0 or nr >= rows or nc >= cols:
+                        continue
+                    if grid[nr][nc] != crop:
+                        continue
+                    if (nr, nc) in region:
+                        continue
+                    region.add((nr, nc))
+                    seen.add((nr, nc))
+                    q.append((nr, nc))
+            
+            regions.append((crop, region))
     
-    def dfs(r, c, veg): # -> area
-        nonlocal side_id
-        if (
-            (r, c) in visited or
-            r not in range(ROWS) or
-            c not in range(COLS) or
-            grid[r][c] != veg
-            ):
-            return 0, 0
-        visited.add((r, c))
+    def count_sides(region):
+        corner_candidates = set()
+        for r, c in region:
+            for cr, cc in [(r-0.5, c-0.5), (r+0.5, c-0.5), (r+0.5, c+0.5), (r-0.5, c+0.5)]:
+                corner_candidates.add((cr, cc))
         
-        if not side_id_to_coords[(r, c)]:
-            side_id += 1
+        corners = 0
+        for cr, cc in corner_candidates:
+            config = [
+                (int(cr-0.5), int(cc-0.5)) in region,
+                (int(cr+0.5), int(cc-0.5)) in region,
+                (int(cr+0.5), int(cc+0.5)) in region,
+                (int(cr-0.5), int(cc+0.5)) in region,
+            ]
+            
+            number = sum(config)
+            if number == 1:
+                corners += 1
+            elif number == 2:
+                if (config[0] and config[2]) or (config[1] and config[3]):
+                    corners += 2
+            elif number == 3:
+                corners += 1
         
-        perim = 0
-        for dr in (-1, 1):
-            perim += dfs_side(dr, 0, r, c, veg, set())
-        for dc in (-1, 1):
-            perim += dfs_side(0, dc, r, c, veg, set())
-        
-        area = 0
-        for dr, dc in NEIGHBOURS:
-            res = dfs(r + dr, c + dc, veg)
-            perim += res[0]
-            area += res[1]
-        return perim, area
+        return corners
     
-    res = []
-    for r in range(ROWS):
-        for c in range(COLS):
-            if (r, c) not in visited:
-                res.append(dfs(r, c, grid[r][c]))
-    return part1_helper()
-    return side_id_to_coords
+    total_price = 0
+    for crop, region in regions:
+        area = len(region)
+        sides = count_sides(region)
+        price = area * sides
+        total_price += price
+        
+    return total_price
 
 def parse():
     with open(filename) as f:
