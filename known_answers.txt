@@ -32,7 +32,7 @@ part2=927
 
 ./python/day9.py
 part1=6200294120911
-part2=INCOMPLETE
+part2=6227018762750
 
 ./python/day10.py
 part1=510
@@ -40,15 +40,15 @@ part2=1058
 
 ./python/day11.py
 part1=198089
-part2=INCOMPLETE
+part2=236302670835517
 
 ./python/day12.py
 part1=1431440
 part2=INCOMPLETE
 
 ./python/day13.py
-part1=INCOMPLETE
-part2=INCOMPLETE
+part1=36954
+part2=79352015273424
 
 ./python/day14.py
 part1=210587128

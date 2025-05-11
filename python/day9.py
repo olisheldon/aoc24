@@ -31,42 +31,49 @@ def part1():
     return checksum(expanded)
 
 def part2():
-    return "INCOMPLETE"    
-        
-    def convert(expanded):
-        res = []
-        for file_id, count in expanded:
-            if file_id == EMPTY:
-                file_id = 0
-            res += [file_id] * count
-        return res
+    files = {}
+    blanks = []
     
-    assign_file_id = lambda x: x // 2 if not x % 2 else EMPTY
-    expanded = [[assign_file_id(i), count] for i, count in enumerate(disk_map)]
-
-    r = len(expanded) - 1
-    while r > 0:
-        if expanded[r][0] == EMPTY:
-            r -= 1
-            continue
-        for l, (file_id, count) in enumerate(expanded):
-            if l > r:
-                break
-            if file_id != EMPTY:
-                continue
-            move_file_id, move_count = expanded[r]
-            if move_count > count:
-                continue
-            
-            expanded[r][0] = EMPTY
-            expanded[l][1] -= move_count
-            expanded.insert(l, [move_file_id, move_count])
-            r -= 1
-            break
+    file_id = 0
+    position = 0
+    
+    for i, count in enumerate(disk_map):
+        if i % 2 == 0:
+            files[file_id] = (position, count)
+            file_id += 1
         else:
-            break
-        r -= 1
-    return checksum(convert(expanded))
+            blanks.append((position, count))
+        position += count
+    
+    for fid in range(file_id - 1, -1, -1):
+        pos, size = files[fid]
+        
+        best_pos = -1
+        best_blank_idx = -1
+        
+        for i, (blank_pos, blank_len) in enumerate(blanks):
+            if blank_pos >= pos:
+                break
+                
+            if blank_len >= size:
+                best_pos = blank_pos
+                best_blank_idx = i
+                break
+        
+        if best_pos != -1:
+            files[fid] = (best_pos, size)
+            
+            if size == blanks[best_blank_idx][1]:
+                blanks.pop(best_blank_idx)
+            else:
+                blanks[best_blank_idx] = (best_pos + size, blanks[best_blank_idx][1] - size)
+    
+    total = 0
+    for fid, (pos, size) in files.items():
+        for x in range(pos, pos + size):
+            total += fid * x
+            
+    return total
 
 def parse():
     with open(filename) as f:
