@@ -34,7 +34,6 @@ def part1():
     for i in range(25):
         stones = blink_linked_list(stones)
 
-    # len
     i = 0
     while stones:
         i += 1
@@ -60,54 +59,54 @@ def blink_linked_list(head):
     return head
 
 class StoneTally:
-
     def __init__(self):
-        self.even_len_digits = []
-        self.other_nums = Counter()
+        self.stones = Counter()
+        # Cache for digit lengths
+        self._digit_length_cache = {}
+
+    def _get_digit_length(self, num):
+        if num not in self._digit_length_cache:
+            self._digit_length_cache[num] = len(str(num))
+        return self._digit_length_cache[num]
 
     def parse(self, stones):
+        self.stones = Counter(stones)
+        # Pre-cache digit lengths for initial numbers
         for stone in stones:
-            if len(str(stone)) % 2 == 0:
-                self.even_len_digits.append(stone)
-            else:
-                self.other_nums[stone] += 1
-    
+            self._get_digit_length(stone)
+
     def num_stones(self):
-        return (
-            len(self.even_len_digits) +
-            sum(self.other_nums.values())
-        )
+        return sum(self.stones.values())
 
     def blink(self):
-        new_even_len_digits = []
-        new_other_nums = Counter()
-
-        # rule 1
-        new_other_nums[1] += self.other_nums.get(0, 0)
-        new_other_nums[0] = 0
-
-        # rule 2
-        for _ in range(self.other_nums.get(2024, 0)):
-            new_even_len_digits.append(20)
-            new_even_len_digits.append(24)
-        new_other_nums[2024] = 0
-
-        # rule 3
-        for other_num, count in self.other_nums.items():
-            new_num = other_num * 2024
-            if len(str(new_num)) % 2 == 0:
-                new_even_len_digits.append(new_num)
-            else:
-                new_other_nums[new_num] += count
+        new_stones = Counter()
         
-        self.even_len_digits = new_even_len_digits
-        self.other_nums = new_other_nums
+        for num, count in self.stones.items():
+            # Rule 1: If the stone is 0, it becomes 1
+            if num == 0:
+                new_stones[1] += count
+                continue
+
+            # Rule 2: If the stone has even number of digits, split it
+            if self._get_digit_length(num) % 2 == 0:
+                num_str = str(num)
+                mid = len(num_str) // 2
+                left = int(num_str[:mid])
+                right = int(num_str[mid:])
+                new_stones[left] += count
+                new_stones[right] += count
+                continue
+
+            # Rule 3: Multiply by 2024
+            new_num = num * 2024
+            new_stones[new_num] += count
+
+        self.stones = new_stones
 
 def part2():
-    return "INCOMPLETE"
     stone_tally = StoneTally()
     stone_tally.parse(lines)
-    for i in range(75):
+    for _ in range(75):
         stone_tally.blink()
     return stone_tally.num_stones()
 
