@@ -48,13 +48,8 @@ def detect_christmas(robots):
     if not (top_left == top_right and bot_left == bot_right):
         return False
 
-    # there could be symmetry, do some expensive copying and check
     grid = create_grid(robots)
     res = list((row[:len(row) // 2] == row[:len(row) // 2:-1]) for row in grid)
-    # print(res)
-    # print(all(res))
-    # if any(res):
-    #     print([i for (i, x) in enumerate(res) if x])
     return all(res)
 
 
@@ -75,19 +70,26 @@ def check(robots):
     return input("Looking good? (y/n)").lower() == "y"
 
 def part2():
-    return "INCOMPLETE"
     robots = parse()
     
-    i = 0
-    while not detect_christmas(robots):
-        for pos, vel in robots:
-            pos[0] = (pos[0] + vel[0]) % ROWS
-            pos[1] = (pos[1] + vel[1]) % COLS
+    min_sf = float("inf")
+    best_iteration = None
+    
+    for iteration in range(ROWS * COLS):
+        current_robots = []
+        for (px, py), (vx, vy) in robots:
+            new_px = (px + vx * iteration) % ROWS
+            new_py = (py + vy * iteration) % COLS
+            current_robots.append(([new_px, new_py], (vx, vy)))
         
-        i += 1
-
-    draw(robots)
-    return i
+        quadrants = safety_value(current_robots)
+        sf = functools.reduce(lambda x, y: x * y, quadrants)
+        
+        if sf < min_sf and sf > 0:
+            min_sf = sf
+            best_iteration = iteration
+    
+    return best_iteration
 
 def parse():
     with open(filename) as f:

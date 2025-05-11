@@ -52,7 +52,7 @@ part2=79352015273424
 
 ./python/day14.py
 part1=210587128
-part2=INCOMPLETE
+part2=7286
 
 ./python/day15.py
 part1=1371036
