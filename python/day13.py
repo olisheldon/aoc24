@@ -17,6 +17,18 @@ def find_min_tokens(a_dx, a_dy, b_dx, b_dy, prize_x, prize_y):
     
     return (min_tokens, is_possible)
 
+def solve_linear_equation(a_dx, a_dy, b_dx, b_dy, prize_x, prize_y):
+    det = a_dx * b_dy - a_dy * b_dx
+    if det == 0:
+        return None
+        
+    x = (prize_x * b_dy - prize_y * b_dx) / det
+    y = (a_dx * prize_y - a_dy * prize_x) / det
+    
+    if x >= 0 and y >= 0 and x.is_integer() and y.is_integer():
+        return (int(x), int(y))
+    return None
+
 def part1():
     machines = parse()
     total_tokens = 0
@@ -30,7 +42,21 @@ def part1():
     return total_tokens
     
 def part2():
-    return "INCOMPLETE"
+    machines = parse()
+    total_tokens = 0
+    
+    for machine in machines:
+        a_dx, a_dy, b_dx, b_dy, prize_x, prize_y = machine
+        prize_x += 10000000000000
+        prize_y += 10000000000000
+        
+        solution = solve_linear_equation(a_dx, a_dy, b_dx, b_dy, prize_x, prize_y)
+        if solution:
+            a_presses, b_presses = solution
+            tokens = a_presses * 3 + b_presses * 1
+            total_tokens += tokens
+    
+    return total_tokens
 
 def parse():
     with open(filename) as f:
