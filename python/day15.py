@@ -1,14 +1,13 @@
 import sys
 from pathlib import Path
 
-PRINT = True
+PRINT = False
 
 WALL = "#"
 BOX = "O"
 ROBOT = "@"
 EMPTY = "."
 
-# Part 2 constants
 WIDE_BOX_LEFT = "["
 WIDE_BOX_RIGHT = "]"
 
@@ -21,16 +20,6 @@ move_to_dir = {
 
 def score(grid):
     return sum(100 * r + c for r in range(len(grid)) for c in range(len(grid[0])) if grid[r][c] == BOX)
-
-def score_wide_boxes(grid):
-    """Score for Part 2, handles wide boxes represented as [] pairs"""
-    total = 0
-    for r in range(len(grid)):
-        for c in range(len(grid[0])):
-            if grid[r][c] == WIDE_BOX_LEFT:
-                # GPS coordinate is calculated from the edge of the map to the left edge of the box
-                total += 100 * r + c
-    return total
 
 def print_grid(move, grid):
     if not PRINT:
@@ -64,7 +53,6 @@ def part1():
             nr += dr
             nc += dc
         
-        # move not possible, do nothing
         if nr not in range(ROWS) or nc not in range(COLS) or grid[nr][nc] == WALL:
             stack = []
             print_grid(move, grid)
@@ -86,13 +74,6 @@ def part1():
     return score(grid)
 
 def widen_grid(grid):
-    """
-    Transform the grid for Part 2:
-    - Wall (#) becomes ##
-    - Box (O) becomes []
-    - Empty (.) becomes ..
-    - Robot (@) becomes @.
-    """
     widened_grid = []
     for row in grid:
         new_row = []
@@ -110,8 +91,82 @@ def widen_grid(grid):
         widened_grid.append(new_row)
     return widened_grid
 
+def score_wide_boxes(grid):
+    total = 0
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == WIDE_BOX_LEFT:
+                total += 100 * r + c
+    return total
+
 def part2():
-    return "INCOMPELTE"
+    grid, moves = parse()
+    
+    grid = widen_grid(grid)
+    
+    ROWS, COLS = len(grid), len(grid[0])
+    
+    r, c = -1, -1
+    for i in range(ROWS):
+        for j in range(COLS):
+            if grid[i][j] == ROBOT:
+                r, c = i, j
+                break
+        if r != -1:
+            break
+    
+    for move in moves:
+        dr, dc = move_to_dir[move]
+        
+        targets = [(r, c)]
+        go = True
+        
+        for cr, cc in targets:
+            nr = cr + dr
+            nc = cc + dc
+            
+            if (nr, nc) in targets:
+                continue
+                
+            if nr < 0 or nr >= ROWS or nc < 0 or nc >= COLS:
+                go = False
+                break
+                
+            char = grid[nr][nc]
+            
+            if char == WALL:
+                go = False
+                break
+                
+            if char == WIDE_BOX_LEFT:
+                targets.append((nr, nc))
+                targets.append((nr, nc + 1))
+                
+            if char == WIDE_BOX_RIGHT:
+                targets.append((nr, nc))
+                targets.append((nr, nc - 1))
+        
+        if not go:
+            print_grid(move, grid)
+            continue
+            
+        grid_copy = [list(row) for row in grid]
+        
+        grid[r][c] = EMPTY
+        for br, bc in targets[1:]:
+            grid[br][bc] = EMPTY
+            
+        grid[r + dr][c + dc] = ROBOT
+        
+        for br, bc in targets[1:]:
+            grid[br + dr][bc + dc] = grid_copy[br][bc]
+            
+        r += dr
+        c += dc
+        
+        print_grid(move, grid)
+    
+    return score_wide_boxes(grid)
 
 def parse():
     with open(filename) as f:
