@@ -58,7 +58,82 @@ def part1():
     return int(bin_s, base=2)
 
 def part2():
-    return "INCOMPLETE"
+    nodes = create_nodes()
+    
+    def make_wire(char, num):
+        return char + str(num).rjust(2, "0")
+    
+    def get_gate_info(node: Node):
+        if not node.inputs:
+            return None, None, None
+        n1, n2, gate = node.inputs[0]
+        return gate, n1.name, n2.name
+
+    def verify_z(node: Node, num):
+        if not node.inputs: return False
+        gate, x, y = get_gate_info(node)
+        if gate != "XOR": return False
+        if num == 0: return sorted([x, y]) == ["x00", "y00"]
+        return verify_intermediate_xor(nodes[x], num) and verify_carry_bit(nodes[y], num) or \
+               verify_intermediate_xor(nodes[y], num) and verify_carry_bit(nodes[x], num)
+
+    def verify_intermediate_xor(node: Node, num):
+        if not node.inputs: return False
+        gate, x, y = get_gate_info(node)
+        if gate != "XOR": return False
+        return sorted([x, y]) == [make_wire("x", num), make_wire("y", num)]
+
+    def verify_carry_bit(node: Node, num):
+        if not node.inputs: return False
+        gate, x, y = get_gate_info(node)
+        if num == 1:
+            if gate != "AND": return False
+            return sorted([x, y]) == ["x00", "y00"]
+        if gate != "OR": return False
+        return verify_direct_carry(nodes[x], num - 1) and verify_recarry(nodes[y], num - 1) or \
+               verify_direct_carry(nodes[y], num - 1) and verify_recarry(nodes[x], num - 1)
+
+    def verify_direct_carry(node: Node, num):
+        if not node.inputs: return False
+        gate, x, y = get_gate_info(node)
+        if gate != "AND": return False
+        return sorted([x, y]) == [make_wire("x", num), make_wire("y", num)]
+
+    def verify_recarry(node: Node, num):
+        if not node.inputs: return False
+        gate, x, y = get_gate_info(node)
+        if gate != "AND": return False
+        return verify_intermediate_xor(nodes[x], num) and verify_carry_bit(nodes[y], num) or \
+               verify_intermediate_xor(nodes[y], num) and verify_carry_bit(nodes[x], num)
+
+    def verify(num):
+        return verify_z(nodes[make_wire("z", num)], num)
+
+    def progress():
+        i = 0
+        while True:
+            if not verify(i): break
+            i += 1
+        return i
+
+    swaps = []
+    for _ in range(4):
+        baseline = progress()
+        for x in nodes:
+            for y in nodes:
+                if x == y: continue
+                # Swap the inputs of the nodes
+                nodes[x].inputs, nodes[y].inputs = nodes[y].inputs, nodes[x].inputs
+                if progress() > baseline:
+                    break
+                # Swap back if no improvement
+                nodes[x].inputs, nodes[y].inputs = nodes[y].inputs, nodes[x].inputs
+            else:
+                continue
+            break
+        swaps += [x, y]
+
+    return ",".join(sorted(swaps))
 
 def parse():
     with open(filename) as f:

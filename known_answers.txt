@@ -80,7 +80,7 @@ part2=966130
 
 ./python/day21.py
 part1=171596
-part2=INCOMPLETE
+part2=209268004868246
 
 ./python/day22.py
 part1=15303617151
@@ -88,13 +88,13 @@ part2=1727
 
 ./python/day23.py
 part1=1344
-part2=INCOMPLETE
+part2=ab,al,cq,cr,da,db,dr,fw,ly,mn,od,py,uh
 
 ./python/day24.py
-part1=INCOMPLETE
-part2=INCOMPLETE
+part1=45121475050728
+part2=gqp,hsw,jmh,mwk,qgd,z10,z18,z33
 
 ./python/day25.py
-part1=INCOMPLETE
+part1=3065
 part2=INCOMPLETE
 
