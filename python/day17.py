@@ -26,6 +26,77 @@ class Computer:
             self._cdv,
             ]
         
+    def reset_state(self, a_value):
+        self.a = a_value
+        self.b = 0
+        self.c = 0
+        self.instruction_ptr = 0
+        self.output = []
+        self.states.clear()
+        self.loop = False
+    
+    def validate_program(self):
+        if self.program_data[-2:] != [3, 0]:
+            raise ValueError("Program must end with JNZ 0")
+        
+        adv_count = 0
+        for i in range(0, len(self.program_data) - 2, 2):
+            if self.program_data[i] == 0:  # ADV instruction
+                adv_count += 1
+                if self.program_data[i + 1] != 3:
+                    raise ValueError("ADV instruction must have operand 3")
+        
+        if adv_count != 1:
+            raise ValueError("Program must have exactly one ADV instruction")
+    
+    def simulate_until_output(self):
+        while self.instruction_ptr < len(self.program_data) - 1:
+            opcode, operand = self.program_data[self.instruction_ptr : self.instruction_ptr + 2]
+            
+            if opcode == 5:  # out
+                val = self._combo(operand) % 8
+                self.instruction_ptr += 2
+                return val
+            else:
+                self.run_command(opcode, operand)
+            
+            if self.loop:
+                return None
+        
+        return None
+    
+    def find_self_replicating_value(self):
+        """
+        Find the lowest positive initial value for register A that causes the program
+        to output a copy of itself.
+        
+        The algorithm works by:
+        1. Building the value for register A bit by bit (3 bits at a time)
+        2. For each candidate value, simulating the program until it produces output
+        3. If the output matches the expected value, recursing to find the next bits
+        4. Continuing until we find a value that produces the entire program as output
+        """
+        self.validate_program()
+        
+        def find_value(target, current_value):
+            if not target:
+                return current_value
+            
+            for bit_value in range(8):
+                candidate = (current_value << 3) | bit_value
+                
+                self.reset_state(candidate)
+                output = self.simulate_until_output()
+                
+                if output == target[-1]:
+                    result = find_value(target[:-1], candidate)
+                    if result is not None:
+                        return result
+            
+            return None
+        
+        return find_value(self.program_data, 0)
+    
     def detect_loop(self):
         state = (self.a, self.b, self.c, self.instruction_ptr)
         if state in self.states:
@@ -88,29 +159,19 @@ class Computer:
         self.c = int(self.a / (2**self._combo(operand)))
         
     def run(self):
-        while self.instruction_ptr < len(self.program_data) - 1:
+        while self.instruction_ptr < len(self.program_data):
             opcode, operand = self.program_data[self.instruction_ptr : self.instruction_ptr + 2]
             self.run_command(opcode, operand)
-            if self.loop:
-                return ""
         return ",".join(self.output)
-    
+
 def part1():
     computer = Computer(*parse())
     output = computer.run()
     return output
 
 def part2():
-    return "INCOMPLETE"
-    register_init, program_data = parse()
-    s = ",".join(map(str, program_data))
-    a = 0
-    computer = Computer(register_init, program_data, a)
-    while computer.run() != s:
-        print(a)
-        a += 1
-        computer = Computer(register_init, program_data, a)
-    return a
+    computer = Computer(*parse())
+    return computer.find_self_replicating_value()
 
 def parse():
     with open(filename) as f:

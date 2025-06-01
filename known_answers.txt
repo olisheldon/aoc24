@@ -60,11 +60,11 @@ part2=1392847
 
 ./python/day16.py
 part1=99448
-part2=INCOMPLETE
+part2=498
 
 ./python/day17.py
 part1=2,1,0,1,7,2,5,0,3
-part2=INCOMPLETE
+part2=267265166222235
 
 ./python/day18.py
 part1=316
