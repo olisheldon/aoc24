@@ -96,5 +96,5 @@ part2=gqp,hsw,jmh,mwk,qgd,z10,z18,z33
 
 ./python/day25.py
 part1=3065
-part2=INCOMPLETE
+part2=None
 

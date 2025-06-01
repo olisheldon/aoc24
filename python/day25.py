@@ -19,21 +19,7 @@ def part1():
     return res
 
 def part2():
-    return "INCOMPLETE"
-    keys, locks = parse()
-    keys = Counter(keys)
-    locks = Counter(locks)
-    
-    # print(locks)
-    
-    res = 0
-    for key, count in keys.items():
-        # comp_lock = tuple(map(lambda x, y: x - y, zip([6] * 5, key)))
-        comp_lock = tuple((x - y for (x, y) in zip([7] * 5, key)))
-        # print(key, comp_lock)
-        if comp_lock in locks:
-            res += locks[comp_lock] * count
-    return res
+    return None
 
 def parse():
     with open(filename) as f:
