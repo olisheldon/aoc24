@@ -1,100 +1,100 @@
-./python/day1.py
+day1
 part1=1941353
 part2=22539317
 
-./python/day2.py
+day2
 part1=463
 part2=514
 
-./python/day3.py
+day3
 part1=167090022
 part2=89823704
 
-./python/day4.py
+day4
 part1=2462
 part2=1877
 
-./python/day5.py
+day5
 part1=4790
 part2=6319
 
-./python/day6.py
+day6
 part1=5329
 part2=2162
 
-./python/day7.py
+day7
 part1=20665830408335
 part2=354060705047464
 
-./python/day8.py
+day8
 part1=259
 part2=927
 
-./python/day9.py
+day9
 part1=6200294120911
 part2=6227018762750
 
-./python/day10.py
+day10
 part1=510
 part2=1058
 
-./python/day11.py
+day11
 part1=198089
 part2=236302670835517
 
-./python/day12.py
+day12
 part1=1431440
 part2=869070
 
-./python/day13.py
+day13
 part1=36954
 part2=79352015273424
 
-./python/day14.py
+day14
 part1=210587128
 part2=7286
 
-./python/day15.py
+day15
 part1=1371036
 part2=1392847
 
-./python/day16.py
+day16
 part1=99448
 part2=498
 
-./python/day17.py
+day17
 part1=2,1,0,1,7,2,5,0,3
 part2=267265166222235
 
-./python/day18.py
+day18
 part1=316
 part2=45,18
 
-./python/day19.py
+day19
 part1=247
 part2=692596560138745
 
-./python/day20.py
+day20
 part1=1351
 part2=966130
 
-./python/day21.py
+day21
 part1=171596
 part2=209268004868246
 
-./python/day22.py
+day22
 part1=15303617151
 part2=1727
 
-./python/day23.py
+day23
 part1=1344
 part2=ab,al,cq,cr,da,db,dr,fw,ly,mn,od,py,uh
 
-./python/day24.py
+day24
 part1=45121475050728
 part2=gqp,hsw,jmh,mwk,qgd,z10,z18,z33
 
-./python/day25.py
+day25
 part1=3065
 part2=None
 
