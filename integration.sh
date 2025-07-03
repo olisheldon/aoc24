@@ -22,7 +22,7 @@ run_cpp() {
   find ./cpp -maxdepth 1 -name 'day*.cpp' | sort -V | while read cppfile; do
     exe="${cppfile%.cpp}"
     echo "$(basename $cppfile .cpp)"
-    g++ -std=c++17 -O2 -o "$exe" "$cppfile"
+    g++ -std=c++23 -O2 -o "$exe" "$cppfile"
     if [ $? -eq 0 ]; then
       "$exe" "$(realpath data/$(basename "$cppfile" .cpp).txt)"
     else
